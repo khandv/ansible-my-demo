@@ -1,9 +1,13 @@
 ---
 - name: user
   hosts: demo
+  vars_prompt:
+    - name: user
+      prompt: "How user?"
+      private: no 
   tasks:
     - name: Create user
       user:
-        name: khan101
+        name: "{{ user }}"
         state: absent
       become: true
