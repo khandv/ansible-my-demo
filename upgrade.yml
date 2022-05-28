@@ -1,0 +1,15 @@
+---
+- name: Upgrade
+  hosts: cluster
+  tasks:
+    - name: Upgrade & Reboot
+      block:
+        - name: Update & Upgrade
+          ansible.builtin.apt:
+            update-cache: true
+            cache_valid_time: 86400
+            upgrade: dist
+
+        - name: Перезагрузка
+          ansible.builtin.reboot:
+      become: true
