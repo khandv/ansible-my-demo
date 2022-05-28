@@ -12,45 +12,47 @@
         - name: Установка дополнительных пакетов
           ansible.builtin.apt:
             name:
+              - apt-transport-https
               - ca-certificates
               - curl
               - gnupg
               - lsb-release
-            update-cache: yes
+            update-cache: true
             cache_valid_time: 86400
 
         - name: Создание директории /etc/apt/keyring
           ansible.builtin.file:
-            path: "/etc/apt/keyring"
+            path: /etc/apt/keyring
             state: directory
+            mode: '0777'
 
         - name: Добавление ключа Docker
           ansible.builtin.apt_key:
-            url: "https://download.docker.com/linux/ubuntu/gpg"
-            keyring: "/etc/apt/keyrings/docker.gpg"
+            url: https://download.docker.com/linux/ubuntu/gpg
+            keyring: /etc/apt/keyrings/docker.gpg
             state: present
 
         - name: Установка стабильного репозитория
           ansible.builtin.apt_repository:
             repo: >
-              deb [arch=amd64 signed-by=/etc/apt/keyrings/docker.gpg] 
+              deb [arch=amd64 signed-by=/etc/apt/keyrings/docker.gpg]
               https://download.docker.com/linux/ubuntu
               {{ ansible_distribution_release }} stable
             state: present
-            update-cache: yes
+            update-cache: true
             filename: docker
 
         - name: Установка Docker
           ansible.builtin.apt:
             name: docker-ce
-            update-cache: yes
+            update-cache: true
 
         - name: Проверка что Docker установлен и перезагружен
           ansible.builtin.service:
             name: docker
             state: restarted
-            enabled: yes
-      become: yes
+            enabled: true
+      become: true
 
     # - name: Установка Docker-compose
     #   block:
@@ -66,21 +68,20 @@
     #         dest: "/usr/local/bin/docker-compose"
     #         mode: 0755
     #   become: yes
-      
     - name: Установка Docker-compose
       ansible.builtin.apt:
         name: docker-compose-plugin
-        update-cache: yes
-      become: yes
+        update-cache: true
+      become: true
 
     - name: Завершение установки
       block:
         - name: Добавление пользователя в группу Docker
           ansible.builtin.user:
             name: "{{ ansible_user }}"
-            append: yes
+            append: true
             groups: docker
-            
+
         - name: Перезагрузка
           ansible.builtin.reboot:
-      become: yes      
+      become: true
