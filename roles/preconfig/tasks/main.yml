@@ -14,6 +14,7 @@
           - curl
           - gnupg
           - lsb-release
+          - python3-pip
         update-cache: true
         cache_valid_time: 86400
     - name: Добавление ключа Docker
@@ -42,11 +43,16 @@
         state: restarted
         enabled: true
   become: true
+
 - name: Установка Docker-compose
   ansible.builtin.apt:
     name: docker-compose-plugin
     update-cache: true
   become: true
+
+- name: Настройка дополнительных пакетов python
+  ansible.builtin.pip:
+    name: docker
 
 - name: Завершение установки
   block:
