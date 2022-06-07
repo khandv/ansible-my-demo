@@ -1,9 +1,11 @@
 ---
-- name: Циклы
-  include_tasks: inner.yml
-  loop:
-    - name: "Vasya"
-    - name: "Katya"
-    - name: "Anton"
-  loop_control:
-    loop_var: outer_item
+- name: Создание сети
+  community.docker.docker_network:
+    name: app_network
+    driver: overlay
+
+- name: Выкладка сервисов
+  include: "../services/{{ item }}/service.yml"
+  vars:
+    - name: "{{ item }}"
+  loop: "{{ services }}"

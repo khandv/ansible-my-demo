@@ -1,7 +1,0 @@
----
-- name: Inner
-  ansible.builtin.debug:
-    msg: "1 {{ outer_item }} - 2 {{ item }}"
-  loop:
-    - 1
-    - 2
